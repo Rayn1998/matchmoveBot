@@ -84,12 +84,20 @@ export const matchmoveRequestFunc = async (
 
         case 3:
             request.previewLink = msg.text;
-            request.contact = msg.chat.username;
             request.step = 4;
-
             await bot.sendMessage(
                 chatId,
-                `Ваш запрос: \nКоличество шотов: ${request.shotsAmount}\nСрок выполнения: ${request.deadline}\nСсылка на превью шотов: ${request.previewLink}`,
+                "Напишите, пожалуйста, Ваш контакт для связи (nickname или номер телефона)",
+            );
+            return true;
+
+        case 4:
+            request.contact = msg.chat.username;
+            request.handWrittenContact = msg.text;
+            request.step = 5;
+            await bot.sendMessage(
+                chatId,
+                `Ваш запрос: \nКоличество шотов: ${request.shotsAmount}\nСрок выполнения: ${request.deadline}\nСсылка на превью шотов: ${request.previewLink}\nКонтакт: ${request.handWrittenContact}`,
                 {
                     reply_markup: {
                         inline_keyboard: [
@@ -134,7 +142,7 @@ export const queryHanlderFunc = async (
 
     if (data === "confirmed_request" && chatId) {
         const confirmedRequest = bot.userRequests.get(chatId);
-        if (confirmedRequest?.step === 4) {
+        if (confirmedRequest?.step === 5) {
             const json = await fs
                 .readFile(filePath, "utf-8")
                 .then((file) => file)
@@ -152,7 +160,8 @@ export const queryHanlderFunc = async (
                 amountOfShots: confirmedRequest?.shotsAmount,
                 deadline: confirmedRequest?.deadline,
                 preview: confirmedRequest?.previewLink,
-                contact: confirmedRequest?.contact,
+                handWrittenContact: confirmedRequest?.handWrittenContact,
+                autoContact: confirmedRequest?.contact,
             });
 
             await fs.writeFile(filePath, JSON.stringify(parsedJson));
@@ -212,7 +221,7 @@ export const getRequestsFunc = async (
     for (const request of parsedJson) {
         await bot.sendMessage(
             chatId,
-            `Количество шотов: ${request.amountOfShots}\nСрок выполнения: ${request.deadline}\nСсылка: ${request.preview}\nКонтакт: @${request.contact}`,
+            `Количество шотов: ${request.amountOfShots}\nСрок выполнения: ${request.deadline}\nСсылка: ${request.preview}\nКонтакт: ${request.handWrittenContact}`,
         );
     }
 };

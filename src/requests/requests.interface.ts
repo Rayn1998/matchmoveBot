@@ -4,4 +4,5 @@ export interface IRequest {
     shotsAmount?: string;
     previewLink?: string;
     contact?: string;
+    handWrittenContact?: string;
 }
