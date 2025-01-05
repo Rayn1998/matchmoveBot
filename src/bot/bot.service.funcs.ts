@@ -8,69 +8,79 @@ export const startFunc = async (bot: TelegramBot, msg: TelegramBot.Message) => {
 
     const isAdmin = msg.chat.username === "bodolanov";
 
-    const keyboard = isAdmin
-        ? {
-              reply_markup: {
-                  keyboard: [
-                      [
-                          {
-                              text: "Запрос на трек",
-                          },
-                          {
-                              text: "Посмотреть запросы",
-                          },
-                          {
-                              text: "Удалить все сохранённые запросы",
-                          },
-                      ],
-                  ],
-                  resize_keyboard: true,
-                  one_time_keyboard: true,
-              },
-          }
-        : {
-              reply_markup: {
-                  keyboard: [
-                      [
-                          {
-                              text: "Запрос на трек",
-                          },
-                      ],
-                  ],
-                  resize_keyboard: true,
-                  one_time_keyboard: true,
-              },
-          };
+    let keyboard;
+    if (isAdmin) {
+        keyboard = {
+            reply_markup: {
+                keyboard: [
+                    [
+                        {
+                            text: "Запрос на трек",
+                        },
+                        {
+                            text: "Посмотреть запросы",
+                        },
+                        {
+                            text: "Удалить все сохранённые запросы",
+                        },
+                    ],
+                ],
+                resize_keyboard: true,
+            },
+        };
+    } else {
+        keyboard = {
+            reply_markup: {
+                keyboard: [
+                    [
+                        {
+                            text: "Запрос на трек",
+                        },
+                    ],
+                ],
+                resize_keyboard: true,
+                one_time_keyboard: true,
+            },
+        };
+    }
 
-    await bot.sendMessage(
-        chatId,
-        `Привет, ${msg.chat.first_name}! Если ты обратился ко мне для заказа шота на трек! Пожалуйста, ответь на пару вопросов, нажав кнопку "Запрос на трек". Это 20 секунд, но сильно упростит и ускорит нашу коммуникацию`,
-        keyboard,
-    );
+    if (isAdmin) {
+        await bot.sendMessage(chatId, `Здарова, дорогой`, keyboard);
+    } else {
+        await bot.sendMessage(
+            chatId,
+            `Привет, ${msg.chat.first_name}! Если ты обратился ко мне для заказа шота на трек! Пожалуйста, ответь на пару вопросов, нажав кнопку "Запрос на трек". Это 20 секунд, но сильно упростит и ускорит нашу коммуникацию`,
+            keyboard,
+        );
+    }
+};
+
+export const helpFunc = async (bot: MatchmoveBot, chatId: number) => {
+    await bot.sendMessage(chatId, "Доступные команды: /start, /help");
 };
 
 export const matchmoveRequestFunc = async (
     bot: MatchmoveBot,
     msg: TelegramBot.Message,
-) => {
+): Promise<boolean> => {
     const chatId = msg.chat.id;
     const request = bot.userRequests.get(chatId);
 
-    if (!request) return;
-    if (msg.text === "Запрос на трек") return;
+    if (!request) return false;
+    if (msg.text === "Запрос на трек") return false;
 
     switch (request.step) {
         case 1:
             request.shotsAmount = msg.text;
             request.step = 2;
             await bot.sendMessage(chatId, "Укажите желаемый срок выполнения");
-            break;
+            return true;
 
         case 2:
             request.deadline = msg.text;
             request.step = 3;
             await bot.sendMessage(chatId, "Добавьте ссылку на превью шотов");
-            break;
+            return true;
 
         case 3:
             request.previewLink = msg.text;
@@ -102,13 +112,14 @@ export const matchmoveRequestFunc = async (
                     },
                 },
             );
-            break;
+            return true;
 
         default:
             await bot.sendMessage(
                 chatId,
                 "Произошла ошибка. Попробуйте снова.",
             );
+            return true;
     }
 };
 

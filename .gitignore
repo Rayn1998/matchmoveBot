@@ -2,3 +2,4 @@
 /dist
 /src/constant.ts
 /requests.json
+*.jpg
