@@ -92,7 +92,7 @@ export const matchmoveRequestFunc = async (
             return true;
 
         case 4:
-            request.contact = msg.chat.username;
+            request.autoContact = msg.chat.username;
             request.handWrittenContact = msg.text;
             request.step = 5;
             await bot.sendMessage(
@@ -161,13 +161,13 @@ export const queryHanlderFunc = async (
                 deadline: confirmedRequest?.deadline,
                 preview: confirmedRequest?.previewLink,
                 handWrittenContact: confirmedRequest?.handWrittenContact,
-                autoContact: confirmedRequest?.contact,
+                autoContact: confirmedRequest?.autoContact,
             });
 
             await fs.writeFile(filePath, JSON.stringify(parsedJson));
             await bot.sendMessage(
                 adminId,
-                `Новый запрос на трек!!\nКоличество шотов: ${confirmedRequest.shotsAmount}\nСроки: ${confirmedRequest.deadline}\nСылка на превью: ${confirmedRequest.previewLink}\nКонтакт: ${confirmedRequest.handWrittenContact}\nАвтоконтакт: ${confirmedRequest.contact}`,
+                `Новый запрос на трек!!\nКоличество шотов: ${confirmedRequest.shotsAmount}\nСроки: ${confirmedRequest.deadline}\nСылка на превью: ${confirmedRequest.previewLink}\nКонтакт: ${confirmedRequest.handWrittenContact}\nАвтоконтакт: ${confirmedRequest.autoContact}`,
             );
         } else {
             await bot.sendMessage(
@@ -225,7 +225,7 @@ export const getRequestsFunc = async (
     for (const request of parsedJson) {
         await bot.sendMessage(
             chatId,
-            `Количество шотов: ${request.amountOfShots}\nСрок выполнения: ${request.deadline}\nСсылка: ${request.preview}\nКонтакт: ${request.handWrittenContact}\nАвтоконтакт: ${request.contact}`,
+            `Количество шотов: ${request.amountOfShots}\nСрок выполнения: ${request.deadline}\nСсылка: ${request.preview}\nКонтакт: ${request.handWrittenContact}\nАвтоконтакт: ${request.autoContact}`,
         );
     }
 };

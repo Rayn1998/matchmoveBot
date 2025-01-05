@@ -3,6 +3,6 @@ export interface IRequest {
     deadline?: string;
     shotsAmount?: string;
     previewLink?: string;
-    contact?: string;
+    autoContact?: string;
     handWrittenContact?: string;
 }
