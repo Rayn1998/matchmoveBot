@@ -1,6 +1,6 @@
 import TelegramBot from "node-telegram-bot-api";
 import { MatchmoveBot } from "./bot.service";
-import { filePath } from "../constant";
+import { filePath, adminId } from "../constant";
 import { promises as fs } from "fs";
 
 export const startFunc = async (bot: TelegramBot, msg: TelegramBot.Message) => {
@@ -165,6 +165,10 @@ export const queryHanlderFunc = async (
             });
 
             await fs.writeFile(filePath, JSON.stringify(parsedJson));
+            await bot.sendMessage(
+                adminId,
+                `Новый запрос на трек!!\nКоличество шотов: ${parsedJson.amountOfShots}\nСроки: ${parsedJson.deadline}\nСылка на превью: ${parsedJson.previewLink}\nКонтакт: ${parsedJson.handWrittenContact}\nАвтоконтакт: ${parsedJson.contact}`,
+            );
         } else {
             await bot.sendMessage(
                 chatId,
