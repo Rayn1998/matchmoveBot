@@ -56,7 +56,10 @@ export const startFunc = async (bot: TelegramBot, msg: TelegramBot.Message) => {
 };
 
 export const helpFunc = async (bot: MatchmoveBot, chatId: number) => {
-    await bot.sendMessage(chatId, "Доступные команды: /start, /help");
+    await bot.sendMessage(
+        chatId,
+        "Доступные команды: /start\n/help\n/track_request",
+    );
 };
 
 export const matchmoveRequestFunc = async (

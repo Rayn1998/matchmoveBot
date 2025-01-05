@@ -30,6 +30,10 @@ export class MatchmoveBot implements IMatchmoveBot {
                 command: "/help",
                 description: "Доступные команды",
             },
+            {
+                command: "/track_request",
+                description: "Заказать трек шота",
+            },
         ]);
     }
 
@@ -48,6 +52,10 @@ export class MatchmoveBot implements IMatchmoveBot {
 
         this.bot.onText(/\/help/, async (msg) => {
             await helpFunc(this, msg.chat.id);
+        });
+
+        this.bot.onText(/\/track_request/, async (msg) => {
+            await this.userRequests.createRequest(this, msg.chat.id);
         });
 
         this.bot.onText(/Посмотреть запросы/, async (msg) => {
