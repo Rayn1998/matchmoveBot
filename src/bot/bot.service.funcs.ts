@@ -167,7 +167,7 @@ export const queryHanlderFunc = async (
             await fs.writeFile(filePath, JSON.stringify(parsedJson));
             await bot.sendMessage(
                 adminId,
-                `Новый запрос на трек!!\nКоличество шотов: ${parsedJson.amountOfShots}\nСроки: ${parsedJson.deadline}\nСылка на превью: ${parsedJson.previewLink}\nКонтакт: ${parsedJson.handWrittenContact}\nАвтоконтакт: ${parsedJson.contact}`,
+                `Новый запрос на трек!!\nКоличество шотов: ${confirmedRequest.shotsAmount}\nСроки: ${confirmedRequest.deadline}\nСылка на превью: ${confirmedRequest.previewLink}\nКонтакт: ${confirmedRequest.handWrittenContact}\nАвтоконтакт: ${confirmedRequest.contact}`,
             );
         } else {
             await bot.sendMessage(
@@ -225,7 +225,7 @@ export const getRequestsFunc = async (
     for (const request of parsedJson) {
         await bot.sendMessage(
             chatId,
-            `Количество шотов: ${request.amountOfShots}\nСрок выполнения: ${request.deadline}\nСсылка: ${request.preview}\nКонтакт: ${request.handWrittenContact}`,
+            `Количество шотов: ${request.amountOfShots}\nСрок выполнения: ${request.deadline}\nСсылка: ${request.preview}\nКонтакт: ${request.handWrittenContact}\nАвтоконтакт: ${request.contact}`,
         );
     }
 };
